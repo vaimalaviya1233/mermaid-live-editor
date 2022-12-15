@@ -46,6 +46,7 @@ jobs:
           record: true
           headless: true
           parallel: true
+          browser: chrome
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_CI: true
