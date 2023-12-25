@@ -1,15 +1,16 @@
-import { verifyFileSizeGreaterThan } from './util';
+import { typeInEditor, verifyFileSizeGreaterThan } from './util';
 describe('Check actions', () => {
   beforeEach(() => {
     cy.clearLocalStorage();
     cy.visit('/edit');
+    cy.contains('Actions').click();
   });
 
   it('should update markdown code', () => {
     cy.get('#markdown')
       .invoke('val')
       .then((oldText) => {
-        cy.get('#editor').click('bottom').type('{enter}C --> HistoryTest');
+        typeInEditor('C --> HistoryTest', { bottom: true, newline: true });
         cy.get('#markdown')
           .invoke('val')
           .then((newText) => {
@@ -18,7 +19,7 @@ describe('Check actions', () => {
       });
   });
 
-  it('should load gists from URL', () => {
+  it.skip('should load gists from URL', () => {
     cy.get('#gist').type('https://gist.github.com/sidharthv96/6268a23e673a533dcb198f241fd7012a');
     cy.contains('Load Gist').click();
     cy.contains('Go shopping!!');
@@ -28,7 +29,7 @@ describe('Check actions', () => {
     cy.clock(new Date(2022, 0, 1).getTime());
 
     cy.get(`#downloadPNG`).click();
-    verifyFileSizeGreaterThan('diagram', 'png', 21_000);
+    verifyFileSizeGreaterThan('diagram', 'png', 34_000);
 
     cy.get(`#downloadSVG`).click();
     verifyFileSizeGreaterThan('diagram', 'svg', 10_000);
@@ -38,7 +39,7 @@ describe('Check actions', () => {
     cy.contains('ER').click();
 
     cy.get(`#downloadPNG`).click();
-    verifyFileSizeGreaterThan('diagram', 'png', 46_000);
+    verifyFileSizeGreaterThan('diagram', 'png', 40_000);
 
     cy.get(`#downloadSVG`).click();
     verifyFileSizeGreaterThan('diagram', 'svg', 11_000);

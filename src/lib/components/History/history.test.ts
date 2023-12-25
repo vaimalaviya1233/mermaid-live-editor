@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type { HistoryEntry } from '$lib/types';
 import { describe, it, expect } from 'vitest';
 import {
@@ -17,7 +18,7 @@ describe('history', () => {
 
     addHistoryEntry({
       state: defaultState,
-      time: 12345,
+      time: 12_345,
       type: 'manual'
     });
 
@@ -25,14 +26,14 @@ describe('history', () => {
       window.localStorage.getItem('manualHistoryStore') ?? '[]'
     ) as HistoryEntry[];
 
-    expect(manualEntry.time).toBe(12345);
+    expect(manualEntry.time).toBe(12_345);
     expect(manualEntry.type).toBe('manual');
     expect(manualEntry.name).not.toBeNull();
     expect(manualEntry.state).not.toBeNull();
 
     addHistoryEntry({
       state: defaultState,
-      time: 54321,
+      time: 54_321,
       type: 'auto'
     });
 
@@ -40,7 +41,7 @@ describe('history', () => {
       window.localStorage.getItem('autoHistoryStore') ?? '[]'
     ) as HistoryEntry[];
 
-    expect(autoEntry.time).toBe(54321);
+    expect(autoEntry.time).toBe(54_321);
     expect(autoEntry.type).toBe('auto');
     expect(autoEntry.name).not.toBeNull();
     expect(autoEntry.state).not.toBeNull();
@@ -56,12 +57,12 @@ describe('history', () => {
   it('should clear history entries', () => {
     addHistoryEntry({
       state: defaultState,
-      time: 12345,
+      time: 12_345,
       type: 'manual'
     });
     addHistoryEntry({
       state: { ...defaultState, code: 'graph TD\\n    A[Christmas] -->|Get money| B(Go shopping)' },
-      time: 123456,
+      time: 123_456,
       type: 'manual'
     });
 
@@ -76,12 +77,12 @@ describe('history', () => {
     historyModeStore.set('auto');
     addHistoryEntry({
       state: defaultState,
-      time: 54321,
+      time: 54_321,
       type: 'auto'
     });
     addHistoryEntry({
       state: { ...defaultState, code: 'graph TD\\n    A[Christmas] -->|Get money| B(Go shopping)' },
-      time: 654321,
+      time: 654_321,
       type: 'auto'
     });
     expect(get(historyStore).length).toBe(2);

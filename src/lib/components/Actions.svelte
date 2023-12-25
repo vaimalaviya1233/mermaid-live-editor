@@ -6,15 +6,19 @@
   import { stateStore } from '$lib/util/state';
   import { logEvent } from '$lib/util/stats';
   import { toBase64 } from 'js-base64';
-  import moment from 'moment';
+  import dayjs from 'dayjs';
   const { krokiRendererUrl, rendererUrl } = env;
 
   type Exporter = (context: CanvasRenderingContext2D, image: HTMLImageElement) => () => void;
 
   const getFileName = (ext: string) =>
-    `mermaid-diagram-${moment().format('YYYY-MM-DD-HHmmss')}.${ext}`;
+    `mermaid-diagram-${dayjs().format('YYYY-MM-DD-HHmmss')}.${ext}`;
 
   const getBase64SVG = (svg?: HTMLElement, width?: number, height?: number): string => {
+    if (svg) {
+      // Prevents the SVG size of the interface from being changed
+      svg = svg.cloneNode(true) as HTMLElement;
+    }
     height && svg?.setAttribute('height', `${height}px`);
     width && svg?.setAttribute('width', `${width}px`); // Workaround https://stackoverflow.com/questions/28690643/firefox-error-rendering-an-svg-image-to-html5-canvas-with-drawimage
     if (!svg) {
@@ -49,7 +53,7 @@
     if (!context) {
       throw new Error('context not found');
     }
-    context.fillStyle = 'white';
+    context.fillStyle = `hsl(${window.getComputedStyle(document.body).getPropertyValue('--b1')})`;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     const image = new Image();
@@ -180,7 +184,7 @@
   });
 </script>
 
-<Card title="Actions" isOpen={true}>
+<Card title="Actions" isOpen={false}>
   <div class="flex flex-wrap gap-2 m-2">
     {#if isClipboardAvailable()}
       <button class="action-btn w-full" on:click={onCopyClipboard}

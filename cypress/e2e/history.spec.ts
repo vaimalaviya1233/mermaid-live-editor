@@ -1,4 +1,4 @@
-import { getEditor, verifyFileSnapshot } from './util';
+import { typeInEditor, verifyFileSnapshot } from './util';
 
 describe('Save History', () => {
   beforeEach(() => {
@@ -6,7 +6,6 @@ describe('Save History', () => {
     cy.clearLocalStorage();
     cy.visit('/edit');
 
-    cy.contains('Actions').click();
     cy.contains('History').click();
   });
 
@@ -24,7 +23,6 @@ describe('Save History', () => {
       '[{"state":{"code":"graph TD\\n    A[New Year] -->|Get money| B(Go shopping)","mermaid":"{\\n  \\"theme\\": \\"dark\\"\\n}","autoSync":true,"updateDiagram":false},"time":0,"type":"auto","id":"69ea820e-522b-4a44-86cf-fd58acde09df","name":"barking-dog"},{"state":{"code":"graph TD\\n    A[Christmas] -->|Get money| B(Go shopping)","mermaid":"{\\n  \\"theme\\": \\"dark\\"\\n}","autoSync":true,"updateDiagram":true},"time":0,"type":"manual","id":"x749ffc6-21dd-418a-b984-7c1ffc3146b3","name":"needy-mosquito"}]'
     );
     cy.reload();
-    cy.contains('Actions').click();
     cy.contains('History').click();
     cy.get('#historyList').find('li').should('have.length', 2);
     cy.get('#historyList').find('No items in History').should('not.exist');
@@ -53,14 +51,14 @@ describe('Save History', () => {
       expect(str).to.equal('State already saved.');
     });
     cy.on('window:confirm', () => true);
-    getEditor().type('  C --> HistoryTest');
+    typeInEditor('  C --> HistoryTest');
     cy.get('#saveHistory').click();
     cy.get('#historyList').find('li').should('have.length', 2);
   });
 
   it('should be able to restore and delete', () => {
     cy.get('#saveHistory').click();
-    getEditor().type('  C --> HistoryTest');
+    typeInEditor('  C --> HistoryTest');
     cy.get('#historyList').find('No items in History').should('not.exist');
     cy.get('#historyList').find('li').should('have.length', 1);
     cy.contains('HistoryTest');
@@ -70,7 +68,7 @@ describe('Save History', () => {
     cy.get('#historyList').find('li').should('have.length', 0);
     cy.get('#historyList').contains('No items in History');
     cy.get('#saveHistory').click();
-    getEditor().type('  C --> HistoryTest');
+    typeInEditor('  C --> HistoryTest');
     cy.get('#saveHistory').click();
     cy.get('#editor').type('ing');
     cy.get('#clearHistory').click();
@@ -83,16 +81,16 @@ describe('Save History', () => {
 
   // TODO: Fix #639
   xit('should auto save history', () => {
-    getEditor().type('  C --> HistoryTest');
-    cy.tick(70000);
+    typeInEditor('  C --> HistoryTest');
+    cy.tick(70_000);
     cy.contains('Timeline').click();
     cy.get('#historyList').find('li').should('have.length', 1);
     cy.get('#editor').type('ing');
-    cy.tick(70000);
+    cy.tick(70_000);
     cy.get('#historyList').find('li').should('have.length', 2);
     for (let i = 0; i < 31; i++) {
       cy.get('#editor').type('.');
-      cy.tick(70000);
+      cy.tick(70_000);
     }
     cy.get('#historyList').find('li').should('have.length', 30);
   });
